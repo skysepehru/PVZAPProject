@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/Sprites">
+        <file>Zombie.png</file>
+        <file>UpperPannel.png</file>
+        <file>Sun.png</file>
+        <file>Pea.png</file>
+        <file>PeaShooter.png</file>
+        <file>Background.png</file>
+    </qresource>
+    <qresource prefix="/Sounds">
+        <file>BackgroundMusic.mp3</file>
+        <file>SunPick.ogg</file>
+        <file>Shoot.ogg</file>
+    </qresource>
+</RCC>
