@@ -18,9 +18,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     controller.cpp \
     main.cpp \
+    model.cpp \
     pea.cpp \
     peashooter.cpp \
     plant.cpp \
+    plantslot.cpp \
     score.cpp \
     sun.cpp \
     view.cpp \
@@ -28,9 +30,11 @@ SOURCES += \
 
 HEADERS += \
     controller.h \
+    model.h \
     pea.h \
     peashooter.h \
     plant.h \
+    plantslot.h \
     score.h \
     sun.h \
     view.h \

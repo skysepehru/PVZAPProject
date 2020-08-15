@@ -6,6 +6,9 @@
         <file>Pea.png</file>
         <file>PeaShooter.png</file>
         <file>Background.png</file>
+        <file>OneLane.png</file>
+        <file>TwoLane.png</file>
+        <file>ThreeLane.png</file>
     </qresource>
     <qresource prefix="/Sounds">
         <file>BackgroundMusic.mp3</file>

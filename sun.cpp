@@ -1,7 +1,7 @@
 #include "sun.h"
 #include <cstdlib>
 #include <QDebug>
-
+#include <QMediaPlayer>
 Sun::Sun(QGraphicsScene *sunScene, Score *sunScore, QGraphicsItem *parent, QTimer *timer):
     QObject(),QGraphicsPixmapItem(parent),sunScene(sunScene),sunScore(sunScore)
 {
@@ -16,8 +16,8 @@ Sun::Sun(QGraphicsScene *sunScene, Score *sunScore, QGraphicsItem *parent, QTime
 void Sun::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     sunScore->addToSunCount(25);
+    sunScore->scorePlayer->setMedia(QUrl("qrc:/Sounds/SunPick.ogg"));
     sunScore->scorePlayer->play();
-    qInfo() <<  sunScore->scorePlayer->state();
     sunScene->removeItem(this);
     delete (this);
 }
