@@ -4,6 +4,7 @@
 #include <QGraphicsPixmapItem>
 #include <QObject>
 #include <QTimer>
+#include <QMediaPlayer>
 
 class Zombie: public QObject , public QGraphicsPixmapItem
 {
@@ -11,10 +12,14 @@ class Zombie: public QObject , public QGraphicsPixmapItem
 
 private:
     int HP;
-    int moveSpeed;
+    float moveSpeed;
+    float threshold;
+    int temp;
+    QMediaPlayer * zombiePlayer;
 public:
-    Zombie(const int& moveSpeed , QTimer *timer,const int& HP, QGraphicsItem * parent);
+    Zombie(const float& moveSpeed , QTimer *timer,const int& HP, QGraphicsItem * parent);
     void decreaseHP();
+    ~Zombie();
 
 public slots:
     void moveToLeft();

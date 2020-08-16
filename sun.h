@@ -12,6 +12,9 @@ class Sun : public QObject , public QGraphicsPixmapItem
     Q_OBJECT
 private:
     QGraphicsScene * sunScene;
+    float moveSpeed;
+    float threshold;
+    int temp;
     Score * sunScore;
     int timeIntervals = 0;
 public:

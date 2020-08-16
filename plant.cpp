@@ -1,6 +1,13 @@
 #include "plant.h"
 
-Plant::Plant()
+Plant::Plant(QGraphicsItem *parent) : QObject() , QGraphicsPixmapItem(parent)
 {
-
+    slot = nullptr;
 }
+
+Plant::~Plant()
+{
+    slot->currentPlant = nullptr;
+}
+
+

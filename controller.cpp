@@ -1,32 +1,91 @@
 #include "controller.h"
 #include "peashooter.h"
+#include "plantcard.h"
 #include <QDebug>
+#include <QGraphicsView>
+#include "view.h"
+
+bool Controller::deselectCurrentObjectSelected()
+{
+    if(currentPlantSelected != nullptr)
+    {
+        if(framesSinceLastPick < 5)
+            return false;
+        delete  currentPlantSelected;
+        currentPlantSelected = nullptr;
+        emit selectedPlantDeselected();
+        return true;
+    }
+    return true;
+}
+
 void Controller::SetupSeason(int seasonNum)
 {
+
     if(seasonItemsHolder != nullptr)
         delete seasonItemsHolder;
     seasonItemsHolder = new QGraphicsRectItem();
     seasonItemsHolder->setRect(0,0,800,600);
+
+
+    PlantCard* peaShooterCard = new PlantCard( "PeaShooter",ctimer,controllerScore,seasonItemsHolder);
+    connect(this,SIGNAL ( selectedPlantDeselected()),peaShooterCard,SLOT(unselected()));
+    connect(this,SIGNAL ( plantAPlant()),peaShooterCard,SLOT(used()));
+    scene->addItem(peaShooterCard);
+    peaShooterCard->setPos(105,7);
+
+    PlantCard* peaShooterCard2 = new PlantCard( "PeaShooter",ctimer,controllerScore,seasonItemsHolder);
+    connect(this,SIGNAL ( selectedPlantDeselected()),peaShooterCard2,SLOT(unselected()));
+    connect(this,SIGNAL ( plantAPlant()),peaShooterCard2,SLOT(used()));
+
+    scene->addItem(peaShooterCard2);
+    peaShooterCard2->setPos(160,7);
+
     QString address;
     int x=0;
     int y=0;
+
     if(seasonNum == 1)
     {
         address ="One";
         x=22;
         y=260;
+        for(int i=0;i<8;i++)
+        {
+            slotArray[0][i]->isPlantable = false;
+            slotArray[1][i]->isPlantable = true;
+            slotArray[2][i]->isPlantable = false;
+        }
+        slotArray[1][7]->isPlantable = false;
     }
     else if(seasonNum ==2)
     {
         address ="Two";
         x=22;
         y=260;
+        for(int i=0;i<8;i++)
+        {
+            slotArray[0][i]->isPlantable = false;
+            slotArray[1][i]->isPlantable = true;
+            slotArray[2][i]->isPlantable = true;
+        }
+        slotArray[1][7]->isPlantable = false;
+        slotArray[2][7]->isPlantable = false;
     }
     else if(seasonNum ==3)
     {
         x=16;
         y=130;
         address ="Three";
+        for(int i=0;i<8;i++)
+        {
+            slotArray[0][i]->isPlantable = true;
+            slotArray[1][i]->isPlantable = true;
+            slotArray[2][i]->isPlantable = true;
+        }
+        slotArray[0][7]->isPlantable = false;
+        slotArray[1][7]->isPlantable = false;
+        slotArray[2][7]->isPlantable = false;
     }
     QGraphicsPixmapItem * lanes = new QGraphicsPixmapItem(seasonItemsHolder);
     lanes->setPixmap(QPixmap(":/Sprites/" + address + "Lane.png"));
@@ -34,7 +93,38 @@ void Controller::SetupSeason(int seasonNum)
     scene->addItem(lanes);
 }
 
-void Controller::addZombie(const int& moveSpeed , const int& HP)
+Plant* Controller::addPlant(QString plant,const int& slotX, const int& slotY)
+{
+    Plant * temp = nullptr;
+    if(plant == "PeaShooter"){
+        temp = new PeaShooter(ctimer, scene ,holder);
+        controllerScore->decreaseSunCount(PeaShooter::getPrice());
+    }
+    temp->slot = slotArray[slotX][slotY];
+    scene->addItem(temp);
+    temp->setPos(slotArray[slotX][slotY]->rect().x() +15 , slotArray[slotX][slotY]->rect().y() + 25);
+    return  temp;
+}
+
+bool Controller::isAnthingSelected()
+{
+    if(currentPlantSelected == nullptr)
+        return false;
+    return true;
+}
+
+void Controller::selectPlant(QString plant)
+{
+    if( deselectCurrentObjectSelected())
+    {
+        framesSinceLastPick = 0;
+        currentPlantSelected = new PlantPreview(plant,ctimer,holder);
+        scene->addItem(currentPlantSelected);
+    }
+}
+
+
+void Controller::addZombie(const float& moveSpeed , const int& HP)
 {
     zombieList.push_back(new Zombie{moveSpeed,ctimer,HP,holder,});
     scene->addItem(zombieList.last());
@@ -46,8 +136,14 @@ void Controller::addSun()
     sunList.push_back(new Sun(scene,controllerScore,holder,ctimer));
 }
 
-Controller::Controller(QObject *parent) : QObject(parent)
+Controller * Controller::instance = nullptr;
+Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected{nullptr}
 {
+    framesSinceLastPick = 0;
+
+    if(Controller::instance == nullptr)
+        Controller::instance = this;
+
     seasonItemsHolder = new QGraphicsRectItem();
     scene = new QGraphicsScene();
     scene->setSceneRect(0,0,800,600);
@@ -56,7 +152,9 @@ Controller::Controller(QObject *parent) : QObject(parent)
     holder->setRect(0,0,800,600);
 
     ctimer = new QTimer();
-    ctimer->start(16);
+    ctimer->start(1000/View::frameRate);
+
+    connect(ctimer,SIGNAL(timeout()),this,SLOT(update()));
 
     scoreBoard = new QGraphicsPixmapItem();
     scoreBoard->setPixmap(QPixmap(":/Sprites/UpperPannel.png"));
@@ -67,24 +165,30 @@ Controller::Controller(QObject *parent) : QObject(parent)
     scene->addItem(controllerScore);
     controllerScore->setPos(40,58);
 
-
-    SetupSeason(1);
-
-
     slotArray = new PlantSlot**[3];
     for(int i= 0;i<3;i++)
     {
         slotArray[i] = new PlantSlot*[8];
         for(int j =0;j<8;j++)
         {
-            slotArray[i][j] = new PlantSlot(38 + (j*90),145 + (i * 120),holder);
+            slotArray[i][j] = new PlantSlot(38 + (j*90),145 + (i * 120),i,j,holder);
             scene->addItem(slotArray[i][j]);
         }
     }
 
-//    auto myPeaShooter = new PeaShooter(ctimer,scene ,holder);
-//    scene->addItem(myPeaShooter);
-//    myPeaShooter->setPos(50,300);
+    SetupSeason(1);
+}
+
+void Controller::slotClickedOn(const int &x, const int &y)
+{
+    if(currentPlantSelected != nullptr)
+    {
+        if(slotArray[x][y]->isPlantable && slotArray[x][y]->currentPlant == nullptr){
+            slotArray[x][y]->currentPlant = addPlant(currentPlantSelected->getPlant(),x,y);
+            emit plantAPlant();
+            deselectCurrentObjectSelected();
+        }
+    }
 }
 
 Controller::~Controller()
@@ -101,4 +205,9 @@ Controller::~Controller()
     delete holder;
     delete ctimer;
     delete seasonItemsHolder;
+}
+
+void Controller::update()
+{
+    framesSinceLastPick++;
 }

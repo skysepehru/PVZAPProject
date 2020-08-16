@@ -1,10 +1,15 @@
 #include "zombie.h"
 #include "plant.h"
 #include <QGraphicsScene>
-Zombie::Zombie(const int& moveSpeed , QTimer * timer,const int& HP,QGraphicsItem * parent) :QObject(),QGraphicsPixmapItem(parent) ,HP(HP), moveSpeed(moveSpeed)
+#include <QtMath>
+
+Zombie::Zombie(const float& moveSpeed , QTimer * timer,const int& HP,QGraphicsItem * parent) :QObject(),QGraphicsPixmapItem(parent) ,HP(HP), moveSpeed(moveSpeed)
 {
     setPixmap(QPixmap(":/Sprites/Zombie.png"));
     connect(timer,SIGNAL(timeout()),this,SLOT(moveToLeft()));
+    zombiePlayer = new QMediaPlayer();
+    zombiePlayer->setMedia(QUrl("qrc:/Sounds/Gulp.mp3"));
+    threshold = 0;
 }
 
 void Zombie::decreaseHP()
@@ -15,6 +20,11 @@ void Zombie::decreaseHP()
         scene()->removeItem(this);
         delete this;
     }
+}
+
+Zombie::~Zombie()
+{
+    delete zombiePlayer;
 }
 
 void Zombie::moveToLeft()
@@ -28,11 +38,16 @@ void Zombie::moveToLeft()
         {
             scene()->removeItem(collidingObjects[i]);
             delete collidingObjects[i];
+            zombiePlayer->setPosition(0);
+            zombiePlayer->play();
             return;
         }
     }
-    setPos(x() - moveSpeed,y());
+    threshold += moveSpeed;
+    temp = qFloor(threshold);
+    threshold -=temp;
+    setPos(x() - temp,y());
 
-    if(x() <= 0 )
-        exit(1);
+    //if(x() <= 0 )
+        //exit(1);
 }

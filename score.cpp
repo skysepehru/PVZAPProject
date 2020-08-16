@@ -8,7 +8,7 @@ Score::Score(QGraphicsItem *parent) : QGraphicsTextItem(parent) , sunCount{0}
     setFont(QFont("times",16));
 
     scorePlayer = new QMediaPlayer();
-    scorePlayer->setMedia(QUrl("qrc:/Sounds/SunPick.ogg"));
+    scorePlayer->setMedia(QUrl("qrc:/Sounds/SunPick.mp3"));
 }
 
 Score::~Score()
@@ -20,4 +20,15 @@ void Score::addToSunCount(int amount)
 {
     sunCount += amount;
     setPlainText(QString::number(sunCount));
+}
+
+void Score::decreaseSunCount(int amount)
+{
+    sunCount -= amount;
+    setPlainText(QString::number(sunCount));
+}
+
+int Score::getSunCount()
+{
+    return sunCount;
 }

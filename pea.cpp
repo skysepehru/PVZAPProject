@@ -2,17 +2,24 @@
 #include <QGraphicsScene>
 #include <QList>
 #include <QDebug>
+#include <QtMath>
 
-Pea::Pea(QTimer *peaTimer, const int &velocity, QGraphicsScene * sceneRef, QGraphicsItem *parent) :QObject(),QGraphicsPixmapItem(parent),velocity(velocity) , sceneRef(sceneRef)
+Pea::Pea(QTimer *peaTimer,QMediaPlayer * player, const float &velocity, QGraphicsScene * sceneRef, QGraphicsItem *parent) :QObject()
+  ,QGraphicsPixmapItem(parent),velocity(velocity) , sceneRef(sceneRef) , player(player)
+
 {
     setPixmap(QPixmap(":Sprites/Pea.png"));
 
     connect(peaTimer,SIGNAL(timeout()),this,SLOT(move()));
+    threshold = 0;
 }
 
 void Pea::move()
 {
-    setPos(x() + velocity , y());
+    threshold += velocity;
+    temp = qFloor(threshold);
+    threshold -= temp;
+    setPos(x() + temp , y());
     if(x() > 800){
         scene()->removeItem(this);
         delete this;
@@ -24,6 +31,8 @@ void Pea::move()
         if(typeid(*(collidingList[i])) == typeid(Zombie))
         {
             dynamic_cast<Zombie *>(collidingList[i])->decreaseHP();
+            player->setPosition(0);
+            player->play();
             scene()->removeItem(this);
             delete this;
             return;

@@ -14,6 +14,8 @@ public:
     Score(QGraphicsItem * parent = nullptr);
     ~Score();
     void addToSunCount(int amount);
+    void decreaseSunCount(int amount);
+    int getSunCount();
 };
 
 #endif // SCORE_H

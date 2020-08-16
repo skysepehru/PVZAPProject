@@ -9,10 +9,15 @@
         <file>OneLane.png</file>
         <file>TwoLane.png</file>
         <file>ThreeLane.png</file>
+        <file>PeaShooterCard.png</file>
     </qresource>
     <qresource prefix="/Sounds">
         <file>BackgroundMusic.mp3</file>
-        <file>SunPick.ogg</file>
-        <file>Shoot.ogg</file>
+        <file>Plant.mp3</file>
+        <file>Seedlift.mp3</file>
+        <file>Shoot.mp3</file>
+        <file>Splat.mp3</file>
+        <file>SunPick.mp3</file>
+        <file>Gulp.mp3</file>
     </qresource>
 </RCC>

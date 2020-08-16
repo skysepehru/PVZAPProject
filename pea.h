@@ -5,15 +5,19 @@
 #include <QGraphicsPixmapItem>
 #include <QTimer>
 #include "zombie.h"
+#include <QMediaPlayer>
 
 class Pea : public QObject , public QGraphicsPixmapItem
 {
     Q_OBJECT
 private:
-    int velocity;
+    float velocity;
+    float threshold;
+    int temp;
     QGraphicsScene * sceneRef;
+    QMediaPlayer * player;
 public:
-    explicit Pea(QTimer *peaTimer , const int& velocity, QGraphicsScene * sceneRef, QGraphicsItem *parent = nullptr);
+    explicit Pea(QTimer *peaTimer , QMediaPlayer * player, const float& velocity, QGraphicsScene * sceneRef, QGraphicsItem *parent = nullptr);
 
 signals:
 

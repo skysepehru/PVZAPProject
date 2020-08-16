@@ -2,9 +2,17 @@
 #include "zombie.h"
 #include <QDebug>
 #include <QMediaPlayer>
+#include <QMediaPlaylist>
+
+View* View::instance = nullptr;
+
+int View::frameRate = 60;
 
 View::View() : QGraphicsView()
 {
+    if(instance == nullptr)
+        instance = this;
+
     viewController = new Controller();
 
     setScene(viewController->scene);
@@ -15,10 +23,13 @@ View::View() : QGraphicsView()
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    playList = new QMediaPlaylist();
+    playList->addMedia(QUrl("qrc:/Sounds/BackgroundMusic.mp3"));
+    playList->setPlaybackMode(QMediaPlaylist::Loop);
     musicPlayer = new QMediaPlayer();
-    musicPlayer->setMedia(QUrl("qrc:/Sounds/BackgroundMusic.mp3"));
-    musicPlayer->setVolume(100);
+    musicPlayer->setPlaylist(playList);
     musicPlayer->play();
+
     qInfo() <<musicPlayer->state();
 
     viewTimer = new QTimer();
@@ -26,19 +37,33 @@ View::View() : QGraphicsView()
     connect(viewTimer,SIGNAL(timeout()),this,SLOT(incrementTime()));
 }
 
+QPoint View::getMousePos()
+{
+    QPoint p = mapFromGlobal(QCursor::pos());
+    return p;
+}
+
 View::~View()
 {
     delete viewTimer;
     delete musicPlayer;
     delete viewController;
+    delete playList;
+}
+
+void View::mousePressEvent(QMouseEvent *event)
+{
+    QGraphicsView::mousePressEvent(event);
+
+    emit mouseLeftClicked();
 }
 
 void View::incrementTime()
 {
     ++seconds;
-    if(seconds == 10 ||seconds == 15)
+    if(seconds == 1)
     {
-        viewController->addZombie(3,10);
+        viewController->addZombie(pixelPerSecondsToPixelPerFrame(90),10);
     }
 
     if(seconds % 2 == 0)

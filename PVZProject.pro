@@ -22,6 +22,8 @@ SOURCES += \
     pea.cpp \
     peashooter.cpp \
     plant.cpp \
+    plantcard.cpp \
+    plantpreview.cpp \
     plantslot.cpp \
     score.cpp \
     sun.cpp \
@@ -34,6 +36,8 @@ HEADERS += \
     pea.h \
     peashooter.h \
     plant.h \
+    plantcard.h \
+    plantpreview.h \
     plantslot.h \
     score.h \
     sun.h \
