@@ -5,8 +5,8 @@
 #include "view.h"
 #include <QtMath>
 
-Sun::Sun(QGraphicsScene *sunScene, Score *sunScore, QGraphicsItem *parent, QTimer *timer):
-    QObject(),QGraphicsPixmapItem(parent),sunScene(sunScene),sunScore(sunScore)
+Sun::Sun(QGraphicsScene *sunScene, Score *sunScore, QGraphicsItem *parent, QTimer *timer,bool flag):
+    QObject(),QGraphicsPixmapItem(parent),sunScene(sunScene),sunScore(sunScore),flag(flag)
 {
     setPixmap(QPixmap(":/Sprites/Sun.png"));
 
@@ -30,12 +30,13 @@ void Sun::mousePressEvent(QGraphicsSceneMouseEvent *event)
 void Sun::move()
 {
     ++timeIntervals;
-    threshold += moveSpeed;
-    temp = qFloor(threshold);
-    threshold -=temp;
-    setPos(x(),y()+temp);
-
-    if(timeIntervals == 120 || y()>700){
+    if(flag){
+        threshold += moveSpeed;
+        temp = qFloor(threshold);
+        threshold -=temp;
+        setPos(x(),y()+temp);
+    }
+    if(timeIntervals == View::instance->secondsToFrameCount(2) || y()>800){
         sunScene->removeItem(this);
         delete this;
     }

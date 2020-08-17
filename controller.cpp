@@ -4,6 +4,7 @@
 #include <QDebug>
 #include <QGraphicsView>
 #include "view.h"
+#include "sunflower.h"
 
 void Controller::deselectCurrentObjectSelected()
 {
@@ -35,11 +36,11 @@ void Controller::SetupSeason(int seasonNum)
     scene->addItem(peaShooterCard);
     peaShooterCard->setPos(105,7);
 
-    PlantCard* peaShooterCard2 = new PlantCard( "PeaShooter",ctimer,controllerScore,seasonItemsHolder);
-    connect(this,SIGNAL ( selectedPlantDeselected()),peaShooterCard2,SLOT(unselected()));
-    connect(this,SIGNAL ( plantAPlant()),peaShooterCard2,SLOT(used()));
-    scene->addItem(peaShooterCard2);
-    peaShooterCard2->setPos(160,7);
+    PlantCard* sunFlowerCard = new PlantCard("SunFlower",ctimer,controllerScore,seasonItemsHolder);
+    connect(this,SIGNAL ( selectedPlantDeselected()),sunFlowerCard,SLOT(unselected()));
+    connect(this,SIGNAL ( plantAPlant()),sunFlowerCard,SLOT(used()));
+    scene->addItem(sunFlowerCard);
+    sunFlowerCard->setPos(160,7);
 
     //initializing season objects and setting correct plantslot settings
     QString address;
@@ -104,6 +105,10 @@ Plant* Controller::addPlant(QString plant,const int& slotX, const int& slotY)
         temp = new PeaShooter(ctimer, scene ,holder);
         controllerScore->decreaseSunCount(PeaShooter::getPrice());
     }
+    else if(plant=="SunFlower"){
+        temp=new SunFlower(ctimer,controllerScore,holder);
+        controllerScore->decreaseSunCount(SunFlower::getPrice());
+    }
     //set the slot on plant
     temp->slot = slotArray[slotX][slotY];
     scene->addItem(temp);
@@ -127,7 +132,7 @@ void Controller::selectPlant(QString plant)
     scene->addItem(currentPlantSelected);
 }
 
-
+//k
 void Controller::addZombie(const float& moveSpeed , const int& HP)
 {
     zombieList.push_back(new Zombie{moveSpeed,ctimer,HP,holder,});
@@ -137,7 +142,7 @@ void Controller::addZombie(const float& moveSpeed , const int& HP)
 
 void Controller::addSun()
 {
-    sunList.push_back(new Sun(scene,controllerScore,holder,ctimer));
+    sunList.push_back(new Sun(scene,controllerScore,holder,ctimer,true));
 }
 
 Controller * Controller::instance = nullptr;

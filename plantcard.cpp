@@ -1,5 +1,6 @@
 #include "plantcard.h"
 #include "peashooter.h"
+#include "sunflower.h"
 #include <QDebug>
 #include <QGraphicsRectItem>
 
@@ -56,6 +57,11 @@ PlantCard::PlantCard(QString plant,QTimer * timer, Score * scoreRef ,QGraphicsIt
     {
         cooldown = PeaShooter::getCooldown();
         price = PeaShooter::getPrice();
+    }
+    if(plant=="SunFlower")
+    {
+        cooldown = SunFlower::getCooldown();
+        price = SunFlower::getPrice();
     }
     //so that when the game starts, there are no cooldown.
     timeSinceLastUse = cooldown;

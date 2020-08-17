@@ -16,6 +16,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    cherrybomb.cpp \
     controller.cpp \
     main.cpp \
     model.cpp \
@@ -27,10 +28,12 @@ SOURCES += \
     plantslot.cpp \
     score.cpp \
     sun.cpp \
+    sunflower.cpp \
     view.cpp \
     zombie.cpp
 
 HEADERS += \
+    cherrybomb.h \
     controller.h \
     model.h \
     pea.h \
@@ -41,6 +44,7 @@ HEADERS += \
     plantslot.h \
     score.h \
     sun.h \
+    sunflower.h \
     view.h \
     zombie.h
 

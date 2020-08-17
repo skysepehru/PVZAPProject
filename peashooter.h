@@ -11,7 +11,6 @@
 class PeaShooter : public Plant
 {
     Q_OBJECT
-
 private:
     QMediaPlayer * shooterPlayer;
     QMediaPlayer * zombieHitPlayer;

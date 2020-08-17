@@ -11,6 +11,7 @@ class Sun : public QObject , public QGraphicsPixmapItem
 {
     Q_OBJECT
 private:
+    bool flag=true;
     QGraphicsScene * sunScene;
     float moveSpeed;
     float threshold;
@@ -18,7 +19,7 @@ private:
     Score * sunScore;
     int timeIntervals = 0;
 public:
-    Sun(QGraphicsScene * sunScene,Score* sunScore, QGraphicsItem *parent , QTimer *timer);
+    Sun(QGraphicsScene * sunScene,Score* sunScore, QGraphicsItem *parent , QTimer *timer,bool flag);
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
 public slots:
     void move();

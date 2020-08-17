@@ -3,7 +3,7 @@
 #include <QGraphicsScene>
 #include <view.h>
 
-PeaShooter::PeaShooter(QTimer *shooterTimer, QGraphicsScene * sceneRef, QGraphicsItem *parent):Plant(parent) , sceneRef(sceneRef)
+PeaShooter::PeaShooter(QTimer *shooterTimer, QGraphicsScene * scenRef, QGraphicsItem *parent):Plant(parent) , sceneRef(sceneRef)
   , shooterTimer(shooterTimer)
 {
 

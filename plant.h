@@ -9,6 +9,7 @@ class PlantSlot;
 
 class Plant : public QObject , public QGraphicsPixmapItem
 {
+
 public:
     Plant(QGraphicsItem *parent = nullptr);
     PlantSlot* slot;
