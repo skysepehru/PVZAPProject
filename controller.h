@@ -37,6 +37,7 @@ private:
     void SetupSeason(int seasonNum);
     //Adds plant on a certain plant slot
     Plant* addPlant(QString plant ,const int& slotX, const int& slotY);
+    QMediaPlayer* bombPlayer;
 public:
     //Singleton
     static Controller * instance;

@@ -5,6 +5,7 @@
 #include <QGraphicsView>
 #include "view.h"
 #include "sunflower.h"
+#include"cherrybomb.h"
 
 void Controller::deselectCurrentObjectSelected()
 {
@@ -41,6 +42,12 @@ void Controller::SetupSeason(int seasonNum)
     connect(this,SIGNAL ( plantAPlant()),sunFlowerCard,SLOT(used()));
     scene->addItem(sunFlowerCard);
     sunFlowerCard->setPos(160,7);
+
+    PlantCard* cherrybombCard = new PlantCard("CherryBomb",ctimer,controllerScore,seasonItemsHolder);
+    connect(this,SIGNAL ( selectedPlantDeselected()),cherrybombCard,SLOT(unselected()));
+    connect(this,SIGNAL ( plantAPlant()),cherrybombCard,SLOT(used()));
+    scene->addItem(cherrybombCard);
+    cherrybombCard->setPos(215,7);
 
     //initializing season objects and setting correct plantslot settings
     QString address;
@@ -106,8 +113,12 @@ Plant* Controller::addPlant(QString plant,const int& slotX, const int& slotY)
         controllerScore->decreaseSunCount(PeaShooter::getPrice());
     }
     else if(plant=="SunFlower"){
-        temp=new SunFlower(ctimer,controllerScore,holder);
+        temp=new SunFlower(ctimer,controllerScore, holder);
         controllerScore->decreaseSunCount(SunFlower::getPrice());
+    }
+    else if(plant=="CherryBomb"){
+        temp=new CherryBomb(ctimer, holder,bombPlayer);
+        controllerScore->decreaseSunCount(CherryBomb::getPrice());
     }
     //set the slot on plant
     temp->slot = slotArray[slotX][slotY];
@@ -185,6 +196,10 @@ Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected
             scene->addItem(slotArray[i][j]);
         }
     }
+
+    bombPlayer = new QMediaPlayer();
+    bombPlayer->setMedia(QUrl("qrc:/Sounds/CherryBombExplosion.mp3"));
+
 
     SetupSeason(3);
 }

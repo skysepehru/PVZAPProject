@@ -2,23 +2,27 @@
 #define CHERRYBOMB_H
 #include "plant.h"
 #include <QMediaPlayer>
+#include <QGraphicsRectItem>
 #include <QTimer>
 
 
 class CherryBomb : public Plant
 {
-//private:
+    Q_OBJECT
+private:
 
-//    QMediaPlayer * bombPlayer;
-//    QTimer * bombTimer;
-//    int interval;
-//    static int price;
-//    static int cooldown;
+    QMediaPlayer * bombPlayer;
+    QTimer * bombTimer;
+    int timeIntervals=0;
+    static int price;
+    static int cooldown;
 
-//public:
-//    CherryBomb(QMediaplayer * bombPlayer,);
-//public slots:
-//    void update();
+public:
+    CherryBomb(QTimer *bombTimer,QGraphicsItem * parent , QMediaPlayer* bombPlayer );
+    static int getCooldown();
+    static int getPrice();
+public slots:
+   void enfejar();
 
 };
 
