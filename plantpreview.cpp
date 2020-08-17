@@ -8,7 +8,6 @@ PlantPreview::PlantPreview(QString plant ,QTimer* timer , QGraphicsItem *parent)
 {
     connect(timer,SIGNAL(timeout()),this,SLOT(update()));
     setPixmap(QPixmap(":/Sprites/" + plant));
-    setPos(QCursor::pos());
     connect(View::instance,SIGNAL(mouseLeftClicked()),this,SLOT(mouseLeftClicked()));
 
 }

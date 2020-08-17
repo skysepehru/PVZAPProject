@@ -9,7 +9,7 @@ void Controller::deselectCurrentObjectSelected()
 {
     if(currentPlantSelected != nullptr)
     {
-        //if less than 5 frames have passed since selection, do not deselect.
+        //if less than 5 frames have passed since selection, do not deselect...bug:select bad inselect
         if(framesSinceLastPick < 5)
             return;
         delete  currentPlantSelected;
@@ -21,6 +21,7 @@ void Controller::deselectCurrentObjectSelected()
 
 void Controller::SetupSeason(int seasonNum)
 {
+    //seasonItemsHolder barye pak kardan har marhale...
     if(seasonItemsHolder != nullptr)
         delete seasonItemsHolder;
 
@@ -186,7 +187,7 @@ Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected
 void Controller::slotClickedOn(const int &x, const int &y)
 {
     //if a plant is selected , the slot clicked on is plantable and it is emply, a plant will be planted.
-    if(currentPlantSelected != nullptr)
+    if(isAnthingSelected())
     {
         if(slotArray[x][y]->isPlantable && slotArray[x][y]->currentPlant == nullptr){
             slotArray[x][y]->currentPlant = addPlant(currentPlantSelected->getPlant(),x,y);
