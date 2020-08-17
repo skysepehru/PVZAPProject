@@ -6,6 +6,7 @@
 void PlantCard::setState(CardState state)
 {
     this->state = state;
+    //two masks are used because of its use in cooldown state
     if(state == CardState::Selected)
     {
         mask->setOpacity(0.7);
@@ -39,6 +40,7 @@ QMediaPlayer* PlantCard::cardPlayer = new QMediaPlayer();
 PlantCard::PlantCard(QString plant,QTimer * timer, Score * scoreRef ,QGraphicsItem *parent) : QObject() , QGraphicsPixmapItem(parent)
    , scoreRef(scoreRef),isSelected{false}
 {
+    //initializing masks
     mask = new QGraphicsRectItem(this);
     mask2 = new QGraphicsRectItem(this);
     mask->setRect(x(),y(),50,70);
@@ -47,14 +49,17 @@ PlantCard::PlantCard(QString plant,QTimer * timer, Score * scoreRef ,QGraphicsIt
     mask2->setBrush(QBrush(Qt::black));
     mask->setOpacity(0.5);
     mask2->setOpacity(0);
+
+    //initializing cooldown and price
     plantType = plant;
     if( plant == "PeaShooter")
     {
         cooldown = PeaShooter::getCooldown();
         price = PeaShooter::getPrice();
     }
+    //so that when the game starts, there are no cooldown.
     timeSinceLastUse = cooldown;
-
+    //set the card graphics
     setPixmap(QPixmap(":/Sprites/" + plant + "Card.png"));
 
     connect(timer,SIGNAL(timeout()),this,SLOT(update()));
@@ -62,9 +67,9 @@ PlantCard::PlantCard(QString plant,QTimer * timer, Score * scoreRef ,QGraphicsIt
 
 void PlantCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
+    //if the plant is in selectable state and it is clicked on, select it.
     if(state == CardState::Selectable)
     {
-
             cardPlayer->setMedia(QUrl("qrc:/Sounds/Seedlift.mp3"));
             cardPlayer->play();
             isSelected = true;
@@ -74,6 +79,7 @@ void PlantCard::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
 void PlantCard::update()
 {
+    //setting state with the conditions in the loop
     ++timeSinceLastUse;
     if(isSelected)
     {
@@ -104,6 +110,7 @@ void PlantCard::used()
 {
     cardPlayer->setMedia(QUrl("qrc:/Sounds/Plant.mp3"));
     cardPlayer->play();
+    //this slot is called whenever a plant is planted, regardless of it being of the type of this card or not
     if(!isSelected)
         return;
     isSelected = false;

@@ -43,6 +43,7 @@ void Zombie::moveToLeft()
             return;
         }
     }
+    //these calculations are done for a steady speed over various farame rates.
     threshold += moveSpeed;
     temp = qFloor(threshold);
     threshold -=temp;

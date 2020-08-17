@@ -10,6 +10,7 @@ int View::frameRate = 60;
 
 View::View() : QGraphicsView()
 {
+    //Singleton
     if(instance == nullptr)
         instance = this;
 
@@ -20,9 +21,12 @@ View::View() : QGraphicsView()
     setBackgroundBrush(QBrush(QImage(":/Sprites/Background.png")));
 
     setFixedSize(800,600);
+
+    //Disable ScrollBars
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
+    //Play Background Music in a Way that it loops after it finishes.
     playList = new QMediaPlaylist();
     playList->addMedia(QUrl("qrc:/Sounds/BackgroundMusic.mp3"));
     playList->setPlaybackMode(QMediaPlaylist::Loop);
@@ -30,8 +34,7 @@ View::View() : QGraphicsView()
     musicPlayer->setPlaylist(playList);
     musicPlayer->play();
 
-    qInfo() <<musicPlayer->state();
-
+    //start timer used for spawning zombies at certain times.
     viewTimer = new QTimer();
     viewTimer->start(1000);
     connect(viewTimer,SIGNAL(timeout()),this,SLOT(incrementTime()));
@@ -39,6 +42,7 @@ View::View() : QGraphicsView()
 
 QPoint View::getMousePos()
 {
+    //mapFromGlobal:converts pixel pos in fullscreen to Application coordinates
     QPoint p = mapFromGlobal(QCursor::pos());
     return p;
 }
@@ -53,6 +57,7 @@ View::~View()
 
 void View::mousePressEvent(QMouseEvent *event)
 {
+    //Base Version Should be called for correct behaviour
     QGraphicsView::mousePressEvent(event);
 
     emit mouseLeftClicked();

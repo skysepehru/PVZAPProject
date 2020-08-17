@@ -24,7 +24,6 @@ private:
 public:
     static int getCooldown();
     static int getPrice();
-    explicit PeaShooter(){}
     explicit PeaShooter(QTimer *shooterTimer , QGraphicsScene * sceneRef , QGraphicsItem *parent = nullptr);
 signals:
 

@@ -5,29 +5,29 @@
 #include <QGraphicsView>
 #include "view.h"
 
-bool Controller::deselectCurrentObjectSelected()
+void Controller::deselectCurrentObjectSelected()
 {
     if(currentPlantSelected != nullptr)
     {
+        //if less than 5 frames have passed since selection, do not deselect.
         if(framesSinceLastPick < 5)
-            return false;
+            return;
         delete  currentPlantSelected;
         currentPlantSelected = nullptr;
+        //notifying plantcards of this event
         emit selectedPlantDeselected();
-        return true;
     }
-    return true;
 }
 
 void Controller::SetupSeason(int seasonNum)
 {
-
     if(seasonItemsHolder != nullptr)
         delete seasonItemsHolder;
+
     seasonItemsHolder = new QGraphicsRectItem();
     seasonItemsHolder->setRect(0,0,800,600);
 
-
+    //initializing plant cards.
     PlantCard* peaShooterCard = new PlantCard( "PeaShooter",ctimer,controllerScore,seasonItemsHolder);
     connect(this,SIGNAL ( selectedPlantDeselected()),peaShooterCard,SLOT(unselected()));
     connect(this,SIGNAL ( plantAPlant()),peaShooterCard,SLOT(used()));
@@ -37,10 +37,10 @@ void Controller::SetupSeason(int seasonNum)
     PlantCard* peaShooterCard2 = new PlantCard( "PeaShooter",ctimer,controllerScore,seasonItemsHolder);
     connect(this,SIGNAL ( selectedPlantDeselected()),peaShooterCard2,SLOT(unselected()));
     connect(this,SIGNAL ( plantAPlant()),peaShooterCard2,SLOT(used()));
-
     scene->addItem(peaShooterCard2);
     peaShooterCard2->setPos(160,7);
 
+    //initializing season objects and setting correct plantslot settings
     QString address;
     int x=0;
     int y=0;
@@ -87,6 +87,8 @@ void Controller::SetupSeason(int seasonNum)
         slotArray[1][7]->isPlantable = false;
         slotArray[2][7]->isPlantable = false;
     }
+
+    //loading lane graphic
     QGraphicsPixmapItem * lanes = new QGraphicsPixmapItem(seasonItemsHolder);
     lanes->setPixmap(QPixmap(":/Sprites/" + address + "Lane.png"));
     lanes->setPos(x,y);
@@ -95,15 +97,17 @@ void Controller::SetupSeason(int seasonNum)
 
 Plant* Controller::addPlant(QString plant,const int& slotX, const int& slotY)
 {
+    //adding plant with the name given.
     Plant * temp = nullptr;
     if(plant == "PeaShooter"){
         temp = new PeaShooter(ctimer, scene ,holder);
         controllerScore->decreaseSunCount(PeaShooter::getPrice());
     }
+    //set the slot on plant
     temp->slot = slotArray[slotX][slotY];
     scene->addItem(temp);
     temp->setPos(slotArray[slotX][slotY]->rect().x() +15 , slotArray[slotX][slotY]->rect().y() + 25);
-    return  temp;
+    return temp;
 }
 
 bool Controller::isAnthingSelected()
@@ -115,12 +119,11 @@ bool Controller::isAnthingSelected()
 
 void Controller::selectPlant(QString plant)
 {
-    if( deselectCurrentObjectSelected())
-    {
-        framesSinceLastPick = 0;
-        currentPlantSelected = new PlantPreview(plant,ctimer,holder);
-        scene->addItem(currentPlantSelected);
-    }
+    if(isAnthingSelected())
+        return;
+    framesSinceLastPick = 0;
+    currentPlantSelected = new PlantPreview(plant,ctimer,holder);
+    scene->addItem(currentPlantSelected);
 }
 
 
@@ -165,6 +168,7 @@ Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected
     scene->addItem(controllerScore);
     controllerScore->setPos(40,58);
 
+    //setup plant slots
     slotArray = new PlantSlot**[3];
     for(int i= 0;i<3;i++)
     {
@@ -176,11 +180,12 @@ Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected
         }
     }
 
-    SetupSeason(1);
+    SetupSeason(3);
 }
 
 void Controller::slotClickedOn(const int &x, const int &y)
 {
+    //if a plant is selected , the slot clicked on is plantable and it is emply, a plant will be planted.
     if(currentPlantSelected != nullptr)
     {
         if(slotArray[x][y]->isPlantable && slotArray[x][y]->currentPlant == nullptr){

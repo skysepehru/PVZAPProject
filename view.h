@@ -13,18 +13,22 @@ class View : public QGraphicsView
     Q_OBJECT
 
 public:
-    static View* instance;
+    static View* instance;//Singleton
     explicit View();
-    QPoint getMousePos();
+    QPoint getMousePos();//returns Mouse Position Relative to the View(Application Window)
     static int frameRate;
+
+    //used for getting frame count in a certain time
     static int secondsToFrameCount(int seconds){return seconds * frameRate;}
+
+    //converts speed(must be float for getting thesame speed on different framerates)
     static float pixelPerSecondsToPixelPerFrame(float pixelPerSeconds){return pixelPerSeconds/frameRate;}
     ~View();
 
 private:
     QTimer * viewTimer;
     QMediaPlayer * musicPlayer;
-    QMediaPlaylist *playList;
+    QMediaPlaylist *playList;//used for looping through music
     int seconds = 0;
     Controller* viewController;
     void mousePressEvent(QMouseEvent *event) override;
@@ -36,6 +40,7 @@ public slots:
 signals:
 
     void mouseLeftClicked();
+
 };
 
 #endif // VIEW_H

@@ -16,10 +16,12 @@ Pea::Pea(QTimer *peaTimer,QMediaPlayer * player, const float &velocity, QGraphic
 
 void Pea::move()
 {
+    //these calculations are done for a steady speed over various farame rates.
     threshold += velocity;
     temp = qFloor(threshold);
     threshold -= temp;
     setPos(x() + temp , y());
+
     if(x() > 800){
         scene()->removeItem(this);
         delete this;
