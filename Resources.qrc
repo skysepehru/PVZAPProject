@@ -10,6 +10,15 @@
         <file>TwoLane.png</file>
         <file>ThreeLane.png</file>
         <file>PeaShooterCard.png</file>
+        <file>ShoverHolder.png</file>
+        <file>Shovel.png</file>
+        <file>ZombieCone.png</file>
+        <file>CherryBombCard.png</file>
+        <file>CherryBomb.png</file>
+        <file>WallnutCard.png</file>
+        <file>Wallnut.png</file>
+        <file>SunFlowerCard.png</file>
+        <file>SunFlower.png</file>
     </qresource>
     <qresource prefix="/Sounds">
         <file>BackgroundMusic.mp3</file>
@@ -19,5 +28,23 @@
         <file>Splat.mp3</file>
         <file>SunPick.mp3</file>
         <file>Gulp.mp3</file>
+        <file>ButtonClick1.mp3</file>
+        <file>ButtonClick2.mp3</file>
+        <file>CherryBombExplosion.mp3</file>
+        <file>CherryBombStart.mp3</file>
+        <file>Groan1.mp3</file>
+        <file>Groan2.mp3</file>
+        <file>Groan3.mp3</file>
+        <file>LoseMusic.mp3</file>
+        <file>LoseScream.mp3</file>
+        <file>Pause.mp3</file>
+        <file>ReadySetPlant.mp3</file>
+        <file>Shovel.mp3</file>
+        <file>WallnutHit.mp3</file>
+        <file>WallnutMoving.mp3</file>
+        <file>WinMusic.mp3</file>
+        <file>WrongSelection.mp3</file>
+        <file>ZombiesComing.mp3</file>
+        <file>SunThrow.mp3</file>
     </qresource>
 </RCC>
