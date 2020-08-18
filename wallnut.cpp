@@ -23,8 +23,8 @@ Plant(parent),wallnutTimer(wallnutTimer),velocity(velocity)
 
         connect(wallnutTimer,SIGNAL(timeout()),this,SLOT(update()));
     }
-int Wallnut::cooldown = View::instance->secondsToFrameCount(5);
-int Wallnut::price = 150;
+int Wallnut::cooldown = View::instance->secondsToFrameCount(0);
+int Wallnut::price = 0;
 int Wallnut::getCooldown()
 {
         return cooldown;
@@ -62,7 +62,7 @@ void Wallnut::update()
     {
         if(typeid(*(collidingList[i])) == typeid(Zombie))
         {
-            dynamic_cast<Zombie *>(collidingList[i])->decreaseHP();
+            dynamic_cast<Zombie*>(collidingList[i])->destroy();
             hitPlayer->setPosition(0);
             hitPlayer->play();
         }

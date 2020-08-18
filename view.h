@@ -26,16 +26,11 @@ public:
     ~View();
 
 private:
-    QTimer * viewTimer;
     QMediaPlayer * musicPlayer;
     QMediaPlaylist *playList;//used for looping through music
-    int seconds = 0;
     Controller* viewController;
     void mousePressEvent(QMouseEvent *event) override;
 
-public slots:
-
-    void incrementTime();
 
 signals:
 

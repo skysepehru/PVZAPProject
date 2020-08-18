@@ -9,8 +9,8 @@ CherryBomb::CherryBomb(QTimer *bombTimer, QGraphicsItem *parent , QMediaPlayer* 
     connect(bombTimer,SIGNAL(timeout()),this,SLOT(enfejar()));
 
 }
-int CherryBomb ::cooldown = View::instance->secondsToFrameCount(5);
-int CherryBomb ::price = 150;
+int CherryBomb ::cooldown = View::instance->secondsToFrameCount(0);
+int CherryBomb ::price = 0;
 int CherryBomb::getCooldown()
 {
     return cooldown;
@@ -38,8 +38,8 @@ void CherryBomb::enfejar()
     {
         if(typeid(*(collidingList[i])) == typeid(Zombie))
         {
-            scene()->removeItem(collidingList[i]);
-            delete collidingList[i];
+
+            dynamic_cast<Zombie*>(collidingList[i])->destroy();
         }
     }
     scene()->removeItem(this);

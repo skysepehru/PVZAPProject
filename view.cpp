@@ -29,15 +29,13 @@ View::View() : QGraphicsView()
     //Play Background Music in a Way that it loops after it finishes.
     playList = new QMediaPlaylist();
     playList->addMedia(QUrl("qrc:/Sounds/BackgroundMusic.mp3"));
+
     playList->setPlaybackMode(QMediaPlaylist::Loop);
     musicPlayer = new QMediaPlayer();
     musicPlayer->setPlaylist(playList);
+    musicPlayer->setVolume(35);
     musicPlayer->play();
 
-    //start timer used for spawning zombies at certain times.
-    viewTimer = new QTimer();
-    viewTimer->start(1000);
-    connect(viewTimer,SIGNAL(timeout()),this,SLOT(incrementTime()));
 }
 
 QPoint View::getMousePos()
@@ -49,7 +47,6 @@ QPoint View::getMousePos()
 
 View::~View()
 {
-    delete viewTimer;
     delete musicPlayer;
     delete viewController;
     delete playList;
@@ -63,16 +60,4 @@ void View::mousePressEvent(QMouseEvent *event)
     emit mouseLeftClicked();
 }
 
-void View::incrementTime()
-{
-    ++seconds;
-    if(seconds == 1)
-    {
-        viewController->addZombie(pixelPerSecondsToPixelPerFrame(90),10);
-    }
 
-    if(seconds % 2 == 0)
-    {
-        viewController->addSun();
-    }
-}

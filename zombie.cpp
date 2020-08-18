@@ -18,9 +18,18 @@ void Zombie::decreaseHP()
     --HP;
     if(HP<=0)
     {
-        scene()->removeItem(this);
-        delete this;
+
+        destroy();
+
     }
+}
+
+void Zombie::destroy()
+{
+    emit onDestroy();
+    scene()->removeItem(this);
+    delete this;
+
 }
 
 Zombie::~Zombie()

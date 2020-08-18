@@ -13,7 +13,6 @@ Sun::Sun(QGraphicsScene *sunScene, Score *sunScore, QGraphicsItem *parent, QTime
     sunScene->addItem(this);
     setPos(rand()%600 + 100,0);
     connect(timer,SIGNAL(timeout()),this,SLOT(move()));
-    sunScore->scorePlayer->setMedia(QUrl("qrc:/Sounds/SunPick.mp3"));
     moveSpeed = View::pixelPerSecondsToPixelPerFrame(120);
     threshold = 0;
 }

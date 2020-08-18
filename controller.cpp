@@ -8,6 +8,7 @@
 #include"cherrybomb.h"
 #include "wallnut.h"
 
+
 void Controller::deselectCurrentObjectSelected()
 {
     if(currentPlantSelected != nullptr)
@@ -49,6 +50,8 @@ void Controller::SetupSeason(int seasonNum)
     {
         addCard(105,7,"PeaShooter");
         addCard(160,7,"SunFlower");
+        addCard(215,7,"Wallnut");
+        addCard(270,7,"CherryBomb");
 
         address ="One";
         x=22;
@@ -66,6 +69,7 @@ void Controller::SetupSeason(int seasonNum)
         addCard(105,7,"PeaShooter");
         addCard(160,7,"SunFlower");
         addCard(215,7,"Wallnut");
+        addCard(270,7,"CherryBomb");
 
         address ="Two";
         x=22;
@@ -112,19 +116,19 @@ Plant* Controller::addPlant(QString plant,const int& slotX, const int& slotY)
     //adding plant with the name given.
     Plant * temp = nullptr;
     if(plant == "PeaShooter"){
-        temp = new PeaShooter(ctimer, scene ,holder);
+        temp = new PeaShooter(ctimer, scene ,seasonItemsHolder);
         controllerScore->decreaseSunCount(PeaShooter::getPrice());
     }
     else if(plant=="SunFlower"){
-        temp=new SunFlower(ctimer,controllerScore, holder);
+        temp=new SunFlower(ctimer,controllerScore, seasonItemsHolder);
         controllerScore->decreaseSunCount(SunFlower::getPrice());
     }
     else if(plant=="CherryBomb"){
-        temp=new CherryBomb(ctimer, holder,bombPlayer);
+        temp=new CherryBomb(ctimer, seasonItemsHolder,bombPlayer);
         controllerScore->decreaseSunCount(CherryBomb::getPrice());
     }
     else if(plant=="Wallnut"){
-        temp=new Wallnut(ctimer, View::instance->pixelPerSecondsToPixelPerFrame(180),holder );
+        temp=new Wallnut(ctimer, View::instance->pixelPerSecondsToPixelPerFrame(180),seasonItemsHolder );
         controllerScore->decreaseSunCount(Wallnut::getPrice());
     }
     //set the slot on plant
@@ -152,12 +156,7 @@ void Controller::selectPlant(QString plant)
 }
 
 //k
-void Controller::addZombie(const float& moveSpeed , const int& HP)
-{
-    zombieList.push_back(new Zombie{moveSpeed,ctimer,HP,holder,});
-    scene->addItem(zombieList.last());
-    zombieList.last()->setPos(800,300);
-}
+
 
 void Controller::addSun()
 {
@@ -168,6 +167,8 @@ Controller * Controller::instance = nullptr;
 Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected{nullptr}
 {
     framesSinceLastPick = 0;
+
+
 
     if(Controller::instance == nullptr)
         Controller::instance = this;
@@ -209,7 +210,13 @@ Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected
     bombPlayer->setMedia(QUrl("qrc:/Sounds/CherryBombExplosion.mp3"));
 
 
-    SetupSeason(2);
+    myModel=new Model();
+    myLevelManager = new LevelManager(ctimer,scene);
+    connect(myLevelManager,SIGNAL(levelFinished()),this,SLOT(wonLevel()));
+    myLevelManager->startLevel(myModel->getCurrentLevel());
+
+
+
 }
 
 void Controller::slotClickedOn(const int &x, const int &y)
@@ -244,9 +251,17 @@ Controller::~Controller()
     delete ctimer;
     delete seasonItemsHolder;
     delete bombPlayer;
+    delete myLevelManager;
+    delete myModel;
 }
 
 void Controller::update()
 {
     framesSinceLastPick++;
+}
+
+void Controller::wonLevel()
+{
+    myModel->goToNextLevel();
+    myLevelManager->startLevel(myModel->getCurrentLevel());
 }

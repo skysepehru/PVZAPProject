@@ -11,7 +11,8 @@ private:
     int progress;
 public:
     Model();
-    Level getCurrentLevel();
+    Level* getCurrentLevel();
+    void goToNextLevel();
 };
 
 #endif // MODEL_H

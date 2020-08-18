@@ -19,8 +19,10 @@ private:
 public:
     Zombie(const float& moveSpeed , QTimer *timer,const int& HP, QGraphicsItem * parent);
     void decreaseHP();
+    void destroy();
     ~Zombie();
-
+signals:
+    void onDestroy();
 public slots:
     void moveToLeft();
 };
