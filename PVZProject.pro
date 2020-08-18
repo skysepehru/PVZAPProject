@@ -30,6 +30,7 @@ SOURCES += \
     plantpreview.cpp \
     plantslot.cpp \
     score.cpp \
+    shovel.cpp \
     sun.cpp \
     sunflower.cpp \
     view.cpp \
@@ -50,6 +51,7 @@ HEADERS += \
     plantpreview.h \
     plantslot.h \
     score.h \
+    shovel.h \
     sun.h \
     sunflower.h \
     view.h \

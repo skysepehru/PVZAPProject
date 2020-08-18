@@ -12,7 +12,7 @@
 #include "plantpreview.h"
 #include "model.h"
 #include "levelmanager.h"
-
+#include "shovel.h"
 
 class Controller : public QObject
 {
@@ -21,6 +21,7 @@ class Controller : public QObject
     friend class LevelManager;
 private:
     //used to prevent instantly deselecting after selecting an object
+    bool isShovelSelected = false;
     int framesSinceLastPick;
     QGraphicsScene * scene;
     QTimer * ctimer;
@@ -31,8 +32,8 @@ private:
     QList<Sun*> sunList;
     //The Scoreboard Graphic Item
     QGraphicsPixmapItem *scoreBoard;
-
-
+    QGraphicsPixmapItem *shovelHolder;
+    Shovel* shovel;
     //array holding the plant Slot refrences
     PlantSlot *** slotArray;
     //if it is null, no plant is selected
@@ -53,6 +54,8 @@ public:
 
     //takes 1,2,3 and initializes the scene based on the number
     void SetupSeason(int seasonNum);
+    bool selectShovel();
+
     //Singleton
     static Controller * instance;
     //deselects the selected object ,returns false if the program tries to instantly deselect after selecting
@@ -74,6 +77,8 @@ signals:
     //sent when a plant is deselected,used in plantcard
     void selectedPlantDeselected();
     void lostLevelController();
+    void shovelDeselected();
+    void shovelUsed();
 
 public slots:
     void update();

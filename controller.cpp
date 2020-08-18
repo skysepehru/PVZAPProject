@@ -11,15 +11,23 @@
 
 void Controller::deselectCurrentObjectSelected()
 {
-    if(currentPlantSelected != nullptr)
+    if(currentPlantSelected != nullptr || isShovelSelected == true)
     {
         //if less than 5 frames have passed since selection, do not deselect...bug:select bad inselect
         if(framesSinceLastPick < 5)
             return;
-        delete  currentPlantSelected;
-        currentPlantSelected = nullptr;
-        //notifying plantcards of this event
-        emit selectedPlantDeselected();
+        if(isShovelSelected)
+        {
+            isShovelSelected = false;
+            emit shovelDeselected();
+            return;
+        }
+        if(currentPlantSelected != nullptr)
+        {
+            emit selectedPlantDeselected();
+            delete  currentPlantSelected;
+            currentPlantSelected = nullptr;
+        }
     }
 }
 
@@ -114,6 +122,22 @@ void Controller::SetupSeason(int seasonNum)
     lanes->setPixmap(QPixmap(":/Sprites/" + address + "Lane.png"));
     lanes->setPos(x,y);
     scene->addItem(lanes);
+    shovel = new Shovel(480,16,ctimer);
+    seasonItemsHolder.push_back(shovel);
+    scene->addItem(shovel);
+    connect(this,SIGNAL(shovelDeselected()),shovel,SLOT(deselected()));
+    connect(this,SIGNAL(shovelUsed()),shovel,SLOT(used()));
+}
+
+bool Controller::selectShovel()
+{
+    if(!isAnthingSelected())
+    {
+        framesSinceLastPick = 0;
+        isShovelSelected= true;
+        return true;
+    }
+    return false;
 }
 
 Plant* Controller::addPlant(QString plant,const int& slotX, const int& slotY)
@@ -148,7 +172,7 @@ Plant* Controller::addPlant(QString plant,const int& slotX, const int& slotY)
 
 bool Controller::isAnthingSelected()
 {
-    if(currentPlantSelected == nullptr)
+    if(currentPlantSelected == nullptr && isShovelSelected == false)
         return false;
     return true;
 }
@@ -196,9 +220,15 @@ Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected
     scene->addItem(scoreBoard);
     scoreBoard->setPos(20,0);
 
+    shovelHolder = new QGraphicsPixmapItem();
+    shovelHolder->setPixmap(QPixmap(":/Sprites/ShoverHolder.png"));
+    scene->addItem(shovelHolder);
+    shovelHolder->setPos(470,8);
     controllerScore = new Score(holder);
     scene->addItem(controllerScore);
     controllerScore->setPos(40,58);
+
+
 
     //setup plant slots
     slotArray = new PlantSlot**[3];
@@ -235,7 +265,16 @@ void Controller::slotClickedOn(const int &x, const int &y)
     //if a plant is selected , the slot clicked on is plantable and it is emply, a plant will be planted.
     if(isAnthingSelected())
     {
-        if(slotArray[x][y]->isPlantable && slotArray[x][y]->currentPlant == nullptr){
+        if(slotArray[x][y]->currentPlant != nullptr && isShovelSelected)
+        {
+            emit shovelUsed();
+            scene->removeItem(slotArray[x][y]->currentPlant);
+            delete slotArray[x][y]->currentPlant;
+            deselectCurrentObjectSelected();
+            return;
+        }
+
+        if(slotArray[x][y]->isPlantable && slotArray[x][y]->currentPlant == nullptr && !isShovelSelected){
             slotArray[x][y]->currentPlant = addPlant(currentPlantSelected->getPlant(),x,y);
             if(currentPlantSelected->getPlant() == "Wallnut"){
                 slotArray[x][y]->currentPlant=nullptr;
