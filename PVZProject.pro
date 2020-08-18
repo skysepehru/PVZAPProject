@@ -30,6 +30,7 @@ SOURCES += \
     sun.cpp \
     sunflower.cpp \
     view.cpp \
+    wallnut.cpp \
     zombie.cpp
 
 HEADERS += \
@@ -46,6 +47,7 @@ HEADERS += \
     sun.h \
     sunflower.h \
     view.h \
+    wallnut.h \
     zombie.h
 
 FORMS +=

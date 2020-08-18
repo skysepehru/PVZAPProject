@@ -2,6 +2,7 @@
 #include "peashooter.h"
 #include "sunflower.h"
 #include "cherrybomb.h"
+#include"wallnut.h"
 #include <QDebug>
 #include <QGraphicsRectItem>
 
@@ -67,6 +68,10 @@ PlantCard::PlantCard(QString plant,QTimer * timer, Score * scoreRef ,QGraphicsIt
     if(plant=="CherryBomb"){
         cooldown = CherryBomb::getCooldown();
         price = CherryBomb::getPrice();
+    }
+    if(plant=="Wallnut"){
+        cooldown=Wallnut::getCooldown();
+        price = Wallnut::getPrice();
     }
 
     //so that when the game starts, there are no cooldown.

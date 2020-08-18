@@ -17,6 +17,7 @@ private:
     static int price;
     static int cooldown;
 
+
 public:
     CherryBomb(QTimer *bombTimer,QGraphicsItem * parent , QMediaPlayer* bombPlayer );
     static int getCooldown();

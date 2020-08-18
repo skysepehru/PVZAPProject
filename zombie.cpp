@@ -2,6 +2,7 @@
 #include "plant.h"
 #include <QGraphicsScene>
 #include <QtMath>
+#include "wallnut.h"
 
 Zombie::Zombie(const float& moveSpeed , QTimer * timer,const int& HP,QGraphicsItem * parent) :QObject(),QGraphicsPixmapItem(parent) ,HP(HP), moveSpeed(moveSpeed)
 {
@@ -36,11 +37,13 @@ void Zombie::moveToLeft()
         Plant* plant = dynamic_cast<Plant *>(collidingObjects[i]);
         if(plant)
         {
+            if(typeid(*plant)!=typeid(Wallnut)){
             scene()->removeItem(collidingObjects[i]);
             delete collidingObjects[i];
             zombiePlayer->setPosition(0);
             zombiePlayer->play();
             return;
+            }
         }
     }
     //these calculations are done for a steady speed over various farame rates.

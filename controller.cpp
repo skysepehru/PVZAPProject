@@ -6,6 +6,7 @@
 #include "view.h"
 #include "sunflower.h"
 #include"cherrybomb.h"
+#include "wallnut.h"
 
 void Controller::deselectCurrentObjectSelected()
 {
@@ -21,6 +22,15 @@ void Controller::deselectCurrentObjectSelected()
     }
 }
 
+void Controller::addCard(int x, int y, QString cardName)
+{
+    PlantCard* plantCard = new PlantCard( cardName,ctimer,controllerScore,seasonItemsHolder);
+    connect(this,SIGNAL ( selectedPlantDeselected()),plantCard,SLOT(unselected()));
+    connect(this,SIGNAL ( plantAPlant()),plantCard,SLOT(used()));
+    scene->addItem(plantCard);
+    plantCard->setPos(x,y);
+}
+
 void Controller::SetupSeason(int seasonNum)
 {
     //seasonItemsHolder barye pak kardan har marhale...
@@ -30,25 +40,6 @@ void Controller::SetupSeason(int seasonNum)
     seasonItemsHolder = new QGraphicsRectItem();
     seasonItemsHolder->setRect(0,0,800,600);
 
-    //initializing plant cards.
-    PlantCard* peaShooterCard = new PlantCard( "PeaShooter",ctimer,controllerScore,seasonItemsHolder);
-    connect(this,SIGNAL ( selectedPlantDeselected()),peaShooterCard,SLOT(unselected()));
-    connect(this,SIGNAL ( plantAPlant()),peaShooterCard,SLOT(used()));
-    scene->addItem(peaShooterCard);
-    peaShooterCard->setPos(105,7);
-
-    PlantCard* sunFlowerCard = new PlantCard("SunFlower",ctimer,controllerScore,seasonItemsHolder);
-    connect(this,SIGNAL ( selectedPlantDeselected()),sunFlowerCard,SLOT(unselected()));
-    connect(this,SIGNAL ( plantAPlant()),sunFlowerCard,SLOT(used()));
-    scene->addItem(sunFlowerCard);
-    sunFlowerCard->setPos(160,7);
-
-    PlantCard* cherrybombCard = new PlantCard("CherryBomb",ctimer,controllerScore,seasonItemsHolder);
-    connect(this,SIGNAL ( selectedPlantDeselected()),cherrybombCard,SLOT(unselected()));
-    connect(this,SIGNAL ( plantAPlant()),cherrybombCard,SLOT(used()));
-    scene->addItem(cherrybombCard);
-    cherrybombCard->setPos(215,7);
-
     //initializing season objects and setting correct plantslot settings
     QString address;
     int x=0;
@@ -56,6 +47,9 @@ void Controller::SetupSeason(int seasonNum)
 
     if(seasonNum == 1)
     {
+        addCard(105,7,"PeaShooter");
+        addCard(160,7,"SunFlower");
+
         address ="One";
         x=22;
         y=260;
@@ -69,6 +63,10 @@ void Controller::SetupSeason(int seasonNum)
     }
     else if(seasonNum ==2)
     {
+        addCard(105,7,"PeaShooter");
+        addCard(160,7,"SunFlower");
+        addCard(215,7,"Wallnut");
+
         address ="Two";
         x=22;
         y=260;
@@ -83,6 +81,11 @@ void Controller::SetupSeason(int seasonNum)
     }
     else if(seasonNum ==3)
     {
+        addCard(105,7,"PeaShooter");
+        addCard(160,7,"SunFlower");
+        addCard(215,7,"Wallnut");
+        addCard(270,7,"CherryBomb");
+
         x=16;
         y=130;
         address ="Three";
@@ -120,12 +123,17 @@ Plant* Controller::addPlant(QString plant,const int& slotX, const int& slotY)
         temp=new CherryBomb(ctimer, holder,bombPlayer);
         controllerScore->decreaseSunCount(CherryBomb::getPrice());
     }
+    else if(plant=="Wallnut"){
+        temp=new Wallnut(ctimer, View::instance->pixelPerSecondsToPixelPerFrame(180),holder );
+        controllerScore->decreaseSunCount(Wallnut::getPrice());
+    }
     //set the slot on plant
     temp->slot = slotArray[slotX][slotY];
     scene->addItem(temp);
     temp->setPos(slotArray[slotX][slotY]->rect().x() +15 , slotArray[slotX][slotY]->rect().y() + 25);
     return temp;
 }
+
 
 bool Controller::isAnthingSelected()
 {
@@ -201,7 +209,7 @@ Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected
     bombPlayer->setMedia(QUrl("qrc:/Sounds/CherryBombExplosion.mp3"));
 
 
-    SetupSeason(3);
+    SetupSeason(2);
 }
 
 void Controller::slotClickedOn(const int &x, const int &y)
@@ -211,6 +219,10 @@ void Controller::slotClickedOn(const int &x, const int &y)
     {
         if(slotArray[x][y]->isPlantable && slotArray[x][y]->currentPlant == nullptr){
             slotArray[x][y]->currentPlant = addPlant(currentPlantSelected->getPlant(),x,y);
+            if(currentPlantSelected->getPlant() == "Wallnut"){
+                slotArray[x][y]->currentPlant=nullptr;
+
+            }
             emit plantAPlant();
             deselectCurrentObjectSelected();
         }
@@ -231,6 +243,7 @@ Controller::~Controller()
     delete holder;
     delete ctimer;
     delete seasonItemsHolder;
+    delete bombPlayer;
 }
 
 void Controller::update()
