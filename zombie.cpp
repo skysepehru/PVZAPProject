@@ -18,9 +18,21 @@ Zombie::Zombie(const float& moveSpeed , QTimer * timer,const int& HP, bool isCon
     zombiePlayer = new QMediaPlayer();
     zombiePlayer->setMedia(QUrl("qrc:/Sounds/Gulp.mp3"));
 
-//    groanPlayer = new QMediaPlayer();
-//    groanPlayer->setMedia(QUrl("qrc:/Sounds/Groan2.mp3"));
-//    groanPlayer->play();
+    groanPlayer = new QMediaPlayer();
+    int a = (rand()%3 )+ 1;
+    if(a == 0)
+    {
+        groanPlayer->setMedia(QUrl("qrc:/Sounds/Groan1.mp3"));
+    }
+    else if(a==1)
+    {
+        groanPlayer->setMedia(QUrl("qrc:/Sounds/Groan2.mp3"));
+    }
+    else if(a==2)
+    {
+        groanPlayer->setMedia(QUrl("qrc:/Sounds/Groan3.mp3"));
+    }
+    groanPlayer->play();
     threshold = 0;
 }
 
@@ -44,7 +56,7 @@ void Zombie::destroy()
 Zombie::~Zombie()
 {
     delete zombiePlayer;
-    //delete groanPlayer;
+    delete groanPlayer;
 }
 
 void Zombie::moveToLeft()

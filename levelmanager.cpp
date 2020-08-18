@@ -8,8 +8,8 @@ LevelManager::LevelManager(QTimer* myCtimer,QGraphicsScene* scene, QObject *pare
 {
     levelTimer= new QTimer();
     connect(levelTimer,SIGNAL(timeout()),this,SLOT(update()));
-
-
+    zombiesComingPlayer = new QMediaPlayer();
+    zombiesComingPlayer->setMedia(QUrl("qrc:/Sounds/ZombiesComing.mp3"));
 }
 
 void LevelManager::addZombie(const float& moveSpeed , const int& HP,int lane,bool isConeZombie)
@@ -49,35 +49,42 @@ LevelManager::~LevelManager()
 
 void LevelManager::update()
 {
-    ++timeIntervals;
 
+    ++timeIntervals;
     if(timeIntervals% 10 == 0){
         Controller::instance->addSun();
     }
     if(counter<currentLevel->levelData.length()){
-        if(timeIntervals== currentLevel->levelData[counter]->enterTime ){
-            if(currentLevel->areLanesRandomized){
+        while( counter<currentLevel->levelData.length() && timeIntervals== currentLevel->levelData[counter]->enterTime )
+        {
+            if(counter == 0)
+            {
+                zombiesComingPlayer->setPosition(0);
+                zombiesComingPlayer->play();
+            }
+            if(currentLevel->areLanesRandomized)
+            {
 
-                if(mode==1){
+                if(mode==1)
+                {
                     addZombie(currentLevel->levelData[counter]->moveSpeed,
                                             currentLevel->levelData[counter]->HP,currentLevel->levelData[counter]->laneNumber,currentLevel->levelData[counter]->isConeZombie);
                 }
-                else if(mode==0){
-                    if(currentLevel->levelData[counter]->laneNumber==2){
-                        addZombie(currentLevel->levelData[counter]->moveSpeed,
-                                                    currentLevel->levelData[counter]->HP,3,currentLevel->levelData[counter]->isConeZombie);
+                else if(mode==0)
+                {
+                    if(currentLevel->levelData[counter]->laneNumber==2)
+                    {
+                        addZombie(currentLevel->levelData[counter]->moveSpeed,currentLevel->levelData[counter]->HP,3,currentLevel->levelData[counter]->isConeZombie);
                     }
                     else if(currentLevel->levelData[counter]->laneNumber==3){
-                        addZombie(currentLevel->levelData[counter]->moveSpeed,
-                                                    currentLevel->levelData[counter]->HP,2,currentLevel->levelData[counter]->isConeZombie);
+                        addZombie(currentLevel->levelData[counter]->moveSpeed,currentLevel->levelData[counter]->HP,2,currentLevel->levelData[counter]->isConeZombie);
                     }
                 }
             }
-            else{
-                addZombie(currentLevel->levelData[counter]->moveSpeed,
-                                        currentLevel->levelData[counter]->HP,currentLevel->levelData[counter]->laneNumber,currentLevel->levelData[counter]->isConeZombie);
+            else
+            {
+                addZombie(currentLevel->levelData[counter]->moveSpeed,currentLevel->levelData[counter]->HP,currentLevel->levelData[counter]->laneNumber,currentLevel->levelData[counter]->isConeZombie);
             }
-
         ++counter;
         }
 

@@ -7,7 +7,7 @@
 #include <QGraphicsRectItem>
 #include<zombie.h>
 #include <QGraphicsScene>
-
+#include <QMediaPlayer>
 
 class LevelManager : public QObject
 {
@@ -17,6 +17,7 @@ private:
     QGraphicsScene* scene;
 public:
     explicit LevelManager(QTimer* myCtimer,QGraphicsScene* scene,QObject *parent = nullptr);
+    QMediaPlayer * zombiesComingPlayer;
     int counter=0;
     int timeIntervals=0;
     int mode;

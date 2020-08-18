@@ -12,7 +12,7 @@ Plant(parent),sunFlowerTimer(sunFlowerTimer),scoreCount(scoreCount),sunFlowerPla
     connect(sunFlowerTimer,SIGNAL(timeout()),this,SLOT(update()));
 }
 int SunFlower::cooldown = View::instance->secondsToFrameCount(3);
-int SunFlower::price= 0;
+int SunFlower::price= 50;
 int SunFlower::getCooldown()
 {
     return cooldown;

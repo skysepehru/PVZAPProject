@@ -16,7 +16,7 @@ private:
     float threshold;
     int temp;
     QMediaPlayer * zombiePlayer;
-    //QMediaPlayer * groanPlayer;
+    QMediaPlayer * groanPlayer;
 public:
     Zombie(const float& moveSpeed , QTimer *timer,const int& HP, bool isConeZombie, QGraphicsItem * parent = nullptr);
     void decreaseHP();
