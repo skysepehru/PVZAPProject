@@ -8,12 +8,13 @@ class Model
 {
 private:
     QVector<Level*> levels;
-    int progress;
+    static int progress;
 public:
     Model();
     bool isGameFinished();
     Level* getCurrentLevel();
     void goToNextLevel();
+    static int getProgress();
 };
 
 #endif // MODEL_H

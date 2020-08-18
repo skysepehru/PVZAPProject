@@ -33,7 +33,11 @@ void PeaShooter::shoot()
     ++timeIntervals;
     if(timeIntervals%View::secondsToFrameCount(1) == 0)
     {
-        auto pea = new Pea(shooterTimer, zombieHitPlayer ,View::pixelPerSecondsToPixelPerFrame(360),sceneRef,this);
+        Pea* pea;
+        if(Model::getProgress()==5)
+         pea = new Pea(shooterTimer, zombieHitPlayer ,View::pixelPerSecondsToPixelPerFrame(450),sceneRef,this);
+        else
+         pea = new Pea(shooterTimer, zombieHitPlayer ,View::pixelPerSecondsToPixelPerFrame(360),sceneRef,this);
         scene()->addItem(pea);
         pea->setPos(55,2);
         shooterPlayer->setPosition(0);

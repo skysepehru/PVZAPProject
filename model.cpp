@@ -1,7 +1,7 @@
 #include "model.h"
 #include "view.h"
 #include <vector>
-
+int Model::progress=0;
 Model::Model()
 {
     progress = 0;
@@ -135,4 +135,9 @@ Level* Model::getCurrentLevel()
 void Model::goToNextLevel()
 {
     progress++;
+}
+
+int Model::getProgress()
+{
+    return progress;
 }
