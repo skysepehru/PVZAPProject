@@ -1,4 +1,4 @@
-#include "plantpreview.h"
+         #include "plantpreview.h"
 #include <QCursor>
 #include <QWidget>
 #include <QApplication>

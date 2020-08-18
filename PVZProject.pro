@@ -18,6 +18,9 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     cherrybomb.cpp \
     controller.cpp \
+    level.cpp \
+    leveldata.cpp \
+    levelmanager.cpp \
     main.cpp \
     model.cpp \
     pea.cpp \
@@ -36,6 +39,9 @@ SOURCES += \
 HEADERS += \
     cherrybomb.h \
     controller.h \
+    level.h \
+    leveldata.h \
+    levelmanager.h \
     model.h \
     pea.h \
     peashooter.h \
