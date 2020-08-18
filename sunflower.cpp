@@ -11,7 +11,7 @@ Plant(parent),sunFlowerTimer(sunFlowerTimer),scoreCount(scoreCount),sunFlowerPla
     sunFlowerPlayer->setMedia(QUrl("qrc:/Sounds/SunThrow.mp3"));
     connect(sunFlowerTimer,SIGNAL(timeout()),this,SLOT(update()));
 }
-int SunFlower::cooldown = View::instance->secondsToFrameCount(5);
+int SunFlower::cooldown = View::instance->secondsToFrameCount(3);
 int SunFlower::price= 50;
 int SunFlower::getCooldown()
 {
@@ -26,7 +26,7 @@ int SunFlower::getPrice()
 void SunFlower::update()
 {
     ++timeIntervals;
-    if(timeIntervals%View::instance->secondsToFrameCount(2)==0){
+    if(timeIntervals%View::instance->secondsToFrameCount(15)==0){
         auto temp=new Sun(scene(),scoreCount,this,sunFlowerTimer,false);
         scene()->addItem(temp);
         sunFlowerPlayer->setPosition(0);
@@ -34,6 +34,12 @@ void SunFlower::update()
         temp->setPos(0,0);
     }
 
+}
+
+void SunFlower::levelEnded()
+{
+    scene()->removeItem(this);
+    delete this;
 }
 
 SunFlower::~SunFlower()

@@ -16,6 +16,7 @@ public:
     void addToSunCount(int amount);
     void decreaseSunCount(int amount);
     int getSunCount();
+    void resetSunCount();
 };
 
 #endif // SCORE_H

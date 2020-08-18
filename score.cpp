@@ -28,7 +28,14 @@ void Score::decreaseSunCount(int amount)
     setPlainText(QString::number(sunCount));
 }
 
+
 int Score::getSunCount()
 {
     return sunCount;
+}
+
+void Score::resetSunCount()
+{
+    sunCount = 0;
+    setPlainText(QString::number(sunCount));
 }

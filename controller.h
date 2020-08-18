@@ -18,7 +18,7 @@ class Controller : public QObject
 {
     Q_OBJECT
     friend class View;
-
+    friend class LevelManager;
 private:
     //used to prevent instantly deselecting after selecting an object
     int framesSinceLastPick;
@@ -26,13 +26,13 @@ private:
     QTimer * ctimer;
     QGraphicsRectItem * holder;
     //parent for items that are specefic to a season
-    QGraphicsRectItem *   seasonItemsHolder;
-
+    //QGraphicsRectItem *   seasonItemsHolder;
+    QVector<QGraphicsItem *> seasonItemsHolder;
     QList<Sun*> sunList;
     //The Scoreboard Graphic Item
     QGraphicsPixmapItem *scoreBoard;
-    //Sun Count Text On the Scoreboard
-    Score *controllerScore;
+
+
     //array holding the plant Slot refrences
     PlantSlot *** slotArray;
     //if it is null, no plant is selected
@@ -45,8 +45,12 @@ private:
     Model *myModel;
     LevelManager *myLevelManager;
     QMediaPlayer* bombPlayer;
-
+    //Sun Count Text On the Scoreboard
+    Score *controllerScore;
+    QMediaPlayer* losePlayer;
+    QMediaPlayer* winPlayer;
 public:
+
     //takes 1,2,3 and initializes the scene based on the number
     void SetupSeason(int seasonNum);
     //Singleton
@@ -69,10 +73,12 @@ signals:
     void plantAPlant();
     //sent when a plant is deselected,used in plantcard
     void selectedPlantDeselected();
+    void lostLevelController();
 
 public slots:
     void update();
     void wonLevel();
+    void lostLevel();
 };
 
 #endif // CONTROLLER_H

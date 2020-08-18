@@ -23,8 +23,8 @@ Plant(parent),wallnutTimer(wallnutTimer),velocity(velocity)
 
         connect(wallnutTimer,SIGNAL(timeout()),this,SLOT(update()));
     }
-int Wallnut::cooldown = View::instance->secondsToFrameCount(0);
-int Wallnut::price = 0;
+int Wallnut::cooldown = View::instance->secondsToFrameCount(3);
+int Wallnut::price = 150;
 int Wallnut::getCooldown()
 {
         return cooldown;
@@ -68,4 +68,10 @@ void Wallnut::update()
         }
     }
 
+}
+
+void Wallnut::levelEnded()
+{
+    scene()->removeItem(this);
+    delete this;
 }

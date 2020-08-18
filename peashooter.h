@@ -28,8 +28,7 @@ signals:
 
 public slots:
     void shoot();
-
-
+    void levelEnded();
 };
 
 #endif // PEASHOOTER_H

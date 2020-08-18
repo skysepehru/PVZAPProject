@@ -35,7 +35,6 @@ void PlantCard::setState(CardState state)
 
 PlantCard::~PlantCard()
 {
-    delete cardPlayer;
 }
 
 QMediaPlayer* PlantCard::cardPlayer = new QMediaPlayer();

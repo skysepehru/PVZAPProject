@@ -13,9 +13,7 @@ class LevelManager : public QObject
 {
     Q_OBJECT
 private:
-    QGraphicsRectItem* levelHolder;
     Level *currentLevel;
-    QList<Zombie*> zombieList;
     QGraphicsScene* scene;
 public:
     explicit LevelManager(QTimer* myCtimer,QGraphicsScene* scene,QObject *parent = nullptr);
@@ -27,7 +25,7 @@ public:
     QTimer * myCtimer;
     int seconds=0;
     void startLevel(Level* level);
-    void addZombie(const float& moveSpeed , const int& HP,int lane);
+    void addZombie(const float& moveSpeed , const int& HP,int lane,bool isConeZombie);
     ~LevelManager();
 signals:
     void levelFinished();

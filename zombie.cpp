@@ -2,14 +2,25 @@
 #include "plant.h"
 #include <QGraphicsScene>
 #include <QtMath>
+#include <QString>
 #include "wallnut.h"
 
-Zombie::Zombie(const float& moveSpeed , QTimer * timer,const int& HP,QGraphicsItem * parent) :QObject(),QGraphicsPixmapItem(parent) ,HP(HP), moveSpeed(moveSpeed)
+Zombie::Zombie(const float& moveSpeed , QTimer * timer,const int& HP, bool isConeZombie,QGraphicsItem * parent) :QObject(),QGraphicsPixmapItem(parent) ,HP(HP), moveSpeed(moveSpeed)
 {
-    setPixmap(QPixmap(":/Sprites/Zombie.png"));
+    if(isConeZombie)
+    {
+        setPixmap(QPixmap(":/Sprites/ZombieCone.png"));
+        setScale(0.9);
+    }
+    else
+        setPixmap(QPixmap(":/Sprites/Zombie.png"));
     connect(timer,SIGNAL(timeout()),this,SLOT(moveToLeft()));
     zombiePlayer = new QMediaPlayer();
     zombiePlayer->setMedia(QUrl("qrc:/Sounds/Gulp.mp3"));
+
+//    groanPlayer = new QMediaPlayer();
+//    groanPlayer->setMedia(QUrl("qrc:/Sounds/Groan2.mp3"));
+//    groanPlayer->play();
     threshold = 0;
 }
 
@@ -18,9 +29,7 @@ void Zombie::decreaseHP()
     --HP;
     if(HP<=0)
     {
-
         destroy();
-
     }
 }
 
@@ -35,6 +44,7 @@ void Zombie::destroy()
 Zombie::~Zombie()
 {
     delete zombiePlayer;
+    //delete groanPlayer;
 }
 
 void Zombie::moveToLeft()
@@ -61,6 +71,11 @@ void Zombie::moveToLeft()
     threshold -=temp;
     setPos(x() - temp,y());
 
-    //if(x() <= 0 )
-        //exit(1);
+    if(x() <= 0 )
+        emit lost();
+}
+
+void Zombie::levelEnd()
+{
+    destroy();
 }

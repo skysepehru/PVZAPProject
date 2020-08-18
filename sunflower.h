@@ -25,6 +25,7 @@ public:
     ~SunFlower();
 public slots:
       void update();
+      void levelEnded();
 
 };
 

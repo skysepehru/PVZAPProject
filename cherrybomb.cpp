@@ -1,7 +1,7 @@
 #include "cherrybomb.h"
 #include"view.h"
 
-CherryBomb::CherryBomb(QTimer *bombTimer, QGraphicsItem *parent , QMediaPlayer* bombPlayer):
+CherryBomb::CherryBomb(QTimer *bombTimer , QMediaPlayer* bombPlayer, QGraphicsItem *parent):
     Plant(parent),bombTimer(bombTimer),bombPlayer(bombPlayer)
 {
     setPixmap(QPixmap(":/Sprites/CherryBomb.png"));
@@ -9,8 +9,8 @@ CherryBomb::CherryBomb(QTimer *bombTimer, QGraphicsItem *parent , QMediaPlayer* 
     connect(bombTimer,SIGNAL(timeout()),this,SLOT(enfejar()));
 
 }
-int CherryBomb ::cooldown = View::instance->secondsToFrameCount(0);
-int CherryBomb ::price = 0;
+int CherryBomb ::cooldown = View::instance->secondsToFrameCount(3);
+int CherryBomb ::price = 150;
 int CherryBomb::getCooldown()
 {
     return cooldown;
@@ -45,6 +45,12 @@ void CherryBomb::enfejar()
     scene()->removeItem(this);
     delete this;
     }
+}
+
+void CherryBomb::levelEnded()
+{
+    scene()->removeItem(this);
+    delete this;
 }
 
 

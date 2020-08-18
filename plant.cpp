@@ -10,4 +10,9 @@ Plant::~Plant()
     slot->currentPlant = nullptr;
 }
 
+void Plant::levelEnded()
+{
+    delete this;
+}
+
 

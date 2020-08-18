@@ -16,7 +16,7 @@ PeaShooter::PeaShooter(QTimer *shooterTimer, QGraphicsScene * scenRef, QGraphics
     zombieHitPlayer->setMedia(QUrl("qrc:/Sounds/Splat.mp3"));
     connect(shooterTimer,SIGNAL(timeout()),this,SLOT(shoot()));
 }
-int PeaShooter::cooldown = View::instance->secondsToFrameCount(5);
+int PeaShooter::cooldown = View::instance->secondsToFrameCount(3);
 int PeaShooter::price= 100;
 int PeaShooter::getCooldown()
 {
@@ -33,10 +33,16 @@ void PeaShooter::shoot()
     ++timeIntervals;
     if(timeIntervals%View::secondsToFrameCount(1) == 0)
     {
-        auto pea = new Pea(shooterTimer, zombieHitPlayer ,View::pixelPerSecondsToPixelPerFrame(360),sceneRef);
+        auto pea = new Pea(shooterTimer, zombieHitPlayer ,View::pixelPerSecondsToPixelPerFrame(360),sceneRef,this);
         scene()->addItem(pea);
-        pea->setPos(x()+55,y()+2);
+        pea->setPos(55,2);
         shooterPlayer->setPosition(0);
         shooterPlayer->play();
     }
+}
+
+void PeaShooter::levelEnded()
+{
+    scene()->removeItem(this);
+    delete this;
 }

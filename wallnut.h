@@ -21,12 +21,13 @@ private:
     int temp;
 
 public:
-    Wallnut(QTimer* wallnutTimer,float velocity, QGraphicsItem * parent);
+    Wallnut(QTimer* wallnutTimer,float velocity, QGraphicsItem * parent = nullptr);
     static int getCooldown();
     static int getPrice();
     ~Wallnut();
 public slots:
     void update();
+    void levelEnded();
 };
 
 #endif // WALLNUT_H

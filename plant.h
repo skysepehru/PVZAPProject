@@ -14,5 +14,7 @@ public:
     Plant(QGraphicsItem *parent = nullptr);
     PlantSlot* slot;
     ~Plant();
+public slots:
+    void levelEnded();
 };
 #endif // PLANT_H

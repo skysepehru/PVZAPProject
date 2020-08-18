@@ -11,6 +11,7 @@ private:
     int progress;
 public:
     Model();
+    bool isGameFinished();
     Level* getCurrentLevel();
     void goToNextLevel();
 };

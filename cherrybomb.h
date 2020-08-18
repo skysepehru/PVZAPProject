@@ -19,11 +19,12 @@ private:
 
 
 public:
-    CherryBomb(QTimer *bombTimer,QGraphicsItem * parent , QMediaPlayer* bombPlayer );
+    CherryBomb(QTimer *bombTimer , QMediaPlayer* bombPlayer ,QGraphicsItem * parent = nullptr);
     static int getCooldown();
     static int getPrice();
 public slots:
    void enfejar();
+   void levelEnded();
 
 };
 

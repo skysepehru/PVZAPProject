@@ -25,7 +25,8 @@ void Controller::deselectCurrentObjectSelected()
 
 void Controller::addCard(int x, int y, QString cardName)
 {
-    PlantCard* plantCard = new PlantCard( cardName,ctimer,controllerScore,seasonItemsHolder);
+    PlantCard* plantCard = new PlantCard( cardName,ctimer,controllerScore);
+    seasonItemsHolder.push_back(plantCard);
     connect(this,SIGNAL ( selectedPlantDeselected()),plantCard,SLOT(unselected()));
     connect(this,SIGNAL ( plantAPlant()),plantCard,SLOT(used()));
     scene->addItem(plantCard);
@@ -34,12 +35,17 @@ void Controller::addCard(int x, int y, QString cardName)
 
 void Controller::SetupSeason(int seasonNum)
 {
-    //seasonItemsHolder barye pak kardan har marhale...
-    if(seasonItemsHolder != nullptr)
-        delete seasonItemsHolder;
+    QGraphicsItem* item;
+    for(int i = seasonItemsHolder.length() - 1;i>=0;i--)
+    {
+        item = seasonItemsHolder[i];
+        seasonItemsHolder.removeAt(i);
+        delete item;
+    }
 
-    seasonItemsHolder = new QGraphicsRectItem();
-    seasonItemsHolder->setRect(0,0,800,600);
+    framesSinceLastPick = 6;
+    deselectCurrentObjectSelected();
+
 
     //initializing season objects and setting correct plantslot settings
     QString address;
@@ -50,8 +56,6 @@ void Controller::SetupSeason(int seasonNum)
     {
         addCard(105,7,"PeaShooter");
         addCard(160,7,"SunFlower");
-        addCard(215,7,"Wallnut");
-        addCard(270,7,"CherryBomb");
 
         address ="One";
         x=22;
@@ -69,7 +73,7 @@ void Controller::SetupSeason(int seasonNum)
         addCard(105,7,"PeaShooter");
         addCard(160,7,"SunFlower");
         addCard(215,7,"Wallnut");
-        addCard(270,7,"CherryBomb");
+        //addCard(270,7,"CherryBomb");
 
         address ="Two";
         x=22;
@@ -105,7 +109,8 @@ void Controller::SetupSeason(int seasonNum)
     }
 
     //loading lane graphic
-    QGraphicsPixmapItem * lanes = new QGraphicsPixmapItem(seasonItemsHolder);
+    QGraphicsPixmapItem * lanes = new QGraphicsPixmapItem();
+    seasonItemsHolder.push_back(lanes);
     lanes->setPixmap(QPixmap(":/Sprites/" + address + "Lane.png"));
     lanes->setPos(x,y);
     scene->addItem(lanes);
@@ -116,21 +121,23 @@ Plant* Controller::addPlant(QString plant,const int& slotX, const int& slotY)
     //adding plant with the name given.
     Plant * temp = nullptr;
     if(plant == "PeaShooter"){
-        temp = new PeaShooter(ctimer, scene ,seasonItemsHolder);
+        temp = new PeaShooter(ctimer, scene);
         controllerScore->decreaseSunCount(PeaShooter::getPrice());
     }
     else if(plant=="SunFlower"){
-        temp=new SunFlower(ctimer,controllerScore, seasonItemsHolder);
+        temp=new SunFlower(ctimer,controllerScore);
         controllerScore->decreaseSunCount(SunFlower::getPrice());
     }
     else if(plant=="CherryBomb"){
-        temp=new CherryBomb(ctimer, seasonItemsHolder,bombPlayer);
+        temp=new CherryBomb(ctimer,bombPlayer);
         controllerScore->decreaseSunCount(CherryBomb::getPrice());
     }
     else if(plant=="Wallnut"){
-        temp=new Wallnut(ctimer, View::instance->pixelPerSecondsToPixelPerFrame(180),seasonItemsHolder );
+        temp=new Wallnut(ctimer, View::instance->pixelPerSecondsToPixelPerFrame(180));
         controllerScore->decreaseSunCount(Wallnut::getPrice());
     }
+    connect(myLevelManager,SIGNAL(levelFinished()),temp,SLOT(levelEnded()));
+    connect(this,SIGNAL(lostLevelController()),temp,SLOT(levelEnded()));
     //set the slot on plant
     temp->slot = slotArray[slotX][slotY];
     scene->addItem(temp);
@@ -173,7 +180,6 @@ Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected
     if(Controller::instance == nullptr)
         Controller::instance = this;
 
-    seasonItemsHolder = new QGraphicsRectItem();
     scene = new QGraphicsScene();
     scene->setSceneRect(0,0,800,600);
 
@@ -209,6 +215,11 @@ Controller::Controller(QObject *parent) : QObject(parent) , currentPlantSelected
     bombPlayer = new QMediaPlayer();
     bombPlayer->setMedia(QUrl("qrc:/Sounds/CherryBombExplosion.mp3"));
 
+    losePlayer = new QMediaPlayer();
+    losePlayer->setMedia(QUrl("qrc:/Sounds/LoseMusic.mp3"));
+
+    winPlayer = new QMediaPlayer();
+    winPlayer->setMedia(QUrl("qrc:/Sounds/WinMusic.mp3"));
 
     myModel=new Model();
     myLevelManager = new LevelManager(ctimer,scene);
@@ -249,10 +260,11 @@ Controller::~Controller()
     delete slotArray;
     delete holder;
     delete ctimer;
-    delete seasonItemsHolder;
     delete bombPlayer;
     delete myLevelManager;
     delete myModel;
+    delete winPlayer;
+    delete losePlayer;
 }
 
 void Controller::update()
@@ -262,6 +274,20 @@ void Controller::update()
 
 void Controller::wonLevel()
 {
+    winPlayer->setPosition(0);
+    winPlayer->play();
+    if(myModel->isGameFinished())
+    {
+        exit(1);
+    }
     myModel->goToNextLevel();
+    myLevelManager->startLevel(myModel->getCurrentLevel());
+}
+
+void Controller::lostLevel()
+{
+    losePlayer->setPosition(0);
+    losePlayer->play();
+    emit lostLevelController();
     myLevelManager->startLevel(myModel->getCurrentLevel());
 }
